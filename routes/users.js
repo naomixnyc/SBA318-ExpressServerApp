@@ -91,6 +91,27 @@ router
     else next();
   });
 
+  router
+  .route("/:id/posts")
+  .get((req, res, next) => {
+    const userId = parseInt(req.params.id);
+    const user = users.find((u) => u.id === userId);
 
+    if (!user) {
+      return next(error(404, "User Not Found"));
+    }
+
+    const userPosts = posts.filter((p) => p.userId === userId);
+
+    const links = [
+      {
+        href: `/users/${userId}`,
+        rel: "user",
+        type: "GET",
+      },
+    ];
+
+    res.json({ posts: userPosts, links });
+  });
 
 module.exports = router;
